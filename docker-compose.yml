@@ -1,0 +1,46 @@
+services:
+  db:
+    image: TODO
+    environment:
+      POSTGRES_PASSWORD: ${TODO}
+    volumes:
+      - :/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "TODO"]
+      interval: 5s
+      retries: 10
+
+  mcp-server:
+    build: ./mcp-server
+    profiles: ["mcp", "agent"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: db
+    develop:
+      watch:
+        - action: sync
+          path: ./mcp-server/src
+          target: TODO
+  # agent:
+  #   build: ./agent
+  #   profiles: ["agent"]
+  #   depends_on: [mcp-server]
+  #   environment:
+  #     MCP_URL: mcp-server
+  #     OLLAMA_URL: http://host.docker.internal:11434
+  #   develop:
+  #     watch:
+  #       - action: sync
+  #         path: ./mcp-server/src
+  #         target: TODO
+
+  # evals:
+  #   build: ./evals
+  #   profile: ["evals"]
+  #   depends_on: [agent]
+
+volumes:
+  TODO:
