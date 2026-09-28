@@ -1,15 +1,19 @@
 services:
   db:
-    image: TODO
+    image: pgvector/pgvector:pg18-trixie
     environment:
-      POSTGRES_PASSWORD: ${TODO}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
     volumes:
-      - :/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD-SHELL", "TODO"]
-      interval: 5s
-      retries: 10
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    # healthcheck:
+    #   test: ["CMD-SHELL", "TODO"]
+    #   interval: 5s
+    #   retries: 10
 
   mcp-server:
     build: ./mcp-server
@@ -18,7 +22,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: db
+      DATABASE_URL: ${DATABASE_URL}
     develop:
       watch:
         - action: sync
@@ -43,4 +47,4 @@ services:
   #   depends_on: [agent]
 
 volumes:
-  TODO:
+  pgdata:
