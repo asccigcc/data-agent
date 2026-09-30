@@ -9,6 +9,7 @@ services:
       - "5433:5432"
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d:ro
+      - ./data:/data:ro
       - pgdata:/var/lib/postgresql
     # healthcheck:
     #   test: ["CMD-SHELL", "TODO"]
