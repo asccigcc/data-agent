@@ -13,10 +13,10 @@ services:
       - ./db/init:/docker-entrypoint-initdb.d:ro
       - ./data:/data:ro
       - pgdata:/var/lib/postgresql
-    # healthcheck:
-    #   test: ["CMD-SHELL", "TODO"]
-    #   interval: 5s
-    #   retries: 10
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
 
   mcp-server:
     build: ./mcp-server
